@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: TableExport
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/exam?serverTimezone=UTC
+    username: root
+    password: root
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format-sql: true
+
+server:
+  port: 8080
