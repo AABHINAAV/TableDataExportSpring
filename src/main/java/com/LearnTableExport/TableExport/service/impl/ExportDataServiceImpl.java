@@ -1,6 +1,7 @@
 package com.LearnTableExport.TableExport.service.impl;
 
-import com.LearnTableExport.TableExport.repository.ExportDataRepository;
+import com.LearnTableExport.TableExport.model.Question;
+import com.LearnTableExport.TableExport.repository.mainrepos.QuestionRepository;
 import com.LearnTableExport.TableExport.service.ExportDataService;
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityManager;
@@ -21,10 +22,10 @@ public class ExportDataServiceImpl implements ExportDataService {
     public static final Logger LOGGER = LoggerFactory.getLogger(ExportDataServiceImpl.class);
 
     @Autowired
-    private ExportDataRepository exportDataRepository;
+    private EntityManager entityManager;
 
     @Autowired
-    private EntityManager entityManager;
+    private QuestionRepository questionRepository;
 
     public Class<?> getEntityClassByName(String className) throws ClassNotFoundException {
         return Class.forName("com.LearnTableExport.TableExport.model." + className);
@@ -71,12 +72,17 @@ public class ExportDataServiceImpl implements ExportDataService {
     }
 
     @Override
-    public String exportTableDataWithColumnsRemoved(String tableName) {
+    public String exportTableDataWithQueryAnnotation(String tableName) {
         String filePath = "D:/VIDA/SpringBoot/TableExport/dumps/" + tableName + ".csv";
         List<String> columnNames = getColumnNames(tableName);
         columnNames = removePiiColumns(columnNames, tableName);
         LOGGER.info("Column names in {} : {}", tableName, String.join(", ", columnNames));
-        exportDataRepository.exportTableToCsvWithColumnsRemoved(tableName, filePath, columnNames);
+        questionRepository.exportTableToCsvWithColumnsRemoved(tableName, filePath, columnNames);
         return "Exporting data from table: " + tableName + " completed successfully.";
+    }
+
+    @Override
+    public List<Question> getAllData() {
+        return questionRepository.findAll();
     }
 }

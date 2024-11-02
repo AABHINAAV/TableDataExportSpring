@@ -1,5 +1,6 @@
 package com.LearnTableExport.TableExport.controller;
 
+import com.LearnTableExport.TableExport.model.Question;
 import com.LearnTableExport.TableExport.service.ExportDataService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api")
 public class ExportDataController {
@@ -18,13 +21,20 @@ public class ExportDataController {
     @Autowired
     private ExportDataService exportDataService;
 
-    @GetMapping("/exportTableData")
-    public ResponseEntity<String> exportTableData(
+    @GetMapping("/export/questionRepo")
+    public ResponseEntity<String> exportTableData_questionRepo(
             @RequestParam(name = "tableName") String tableName
     ) {
         LOG.info("Exporting data from table: {}", tableName);
-        String res = exportDataService.exportTableDataWithColumnsRemoved(tableName);
+        String res = exportDataService.exportTableDataWithQueryAnnotation(tableName);
         return ResponseEntity.ok(res);
+    }
+
+    @GetMapping("/getALLData")
+    public ResponseEntity<String> getAllData() {
+        List<Question> res = exportDataService.getAllData();
+        LOG.info(res.toString());
+        return ResponseEntity.ok("got all Data");
     }
 
 }
